@@ -8,6 +8,7 @@ export async function init() {
   const answers = await getAnswers();
   const projectCreation = await createProject(answers);
   if (!projectCreation.success) {
+    p.cancel(`❌ Failed to create project: ${projectCreation.error}`);
     return;
   }
 

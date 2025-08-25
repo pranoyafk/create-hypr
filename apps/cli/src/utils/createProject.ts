@@ -10,7 +10,7 @@ export async function createProject(_config: IConfig): Promise<TCreateProjectRet
     spinner.stop("Project created successfully!");
     return { success: true };
   } catch (error) {
-    spinner.stop("Failed to create project");
+    spinner.stop("Failed!");
 
     return {
       success: false,
