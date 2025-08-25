@@ -1,0 +1,35 @@
+{
+  "name": "create-hypr",
+  "version": "0.0.1",
+  "description": "A modern starter CLI to scaffold fullstack apps with Turborepo, TanStack, and more.",
+  "module": "src/index.ts",
+  "type": "module",
+  "bin": {
+    "create-hypr": "./dist/index.cjs"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --minify",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "cli",
+    "fullstack",
+    "starter",
+    "turborepo",
+    "tanstack",
+    "biome",
+    "resend",
+    "hypr",
+    "trpc"
+  ],
+  "author": "Pranoy Majumdar",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
