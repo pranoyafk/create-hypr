@@ -5,10 +5,11 @@
   "module": "src/index.ts",
   "type": "module",
   "bin": {
-    "create-hypr": "./dist/index.cjs"
+    "create-hypr": "./dist/index.js"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist --minify",
+    "build": "bun build.ts",
+    "dev": "bun run build && node ./dist/index.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -31,5 +32,10 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.3.1"
   }
 }
