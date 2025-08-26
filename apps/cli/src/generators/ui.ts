@@ -1,8 +1,8 @@
 import { execPrefix } from "../utils/consts";
-import type { IConfig } from "../utils/types";
+import type { IConfig, PackageJson } from "../utils/types";
 
 export function generateUiPackageJson(config: IConfig) {
-  const packageJson = {
+  const packageJson: PackageJson = {
     name: "@hypr-stack/ui",
     version: "0.0.0",
     private: true,

@@ -15,3 +15,17 @@ export interface IConfig {
   packageManager: TPackageManager;
   installDependencies: boolean;
 }
+
+export interface PackageJson {
+  name: string;
+  private: boolean;
+  version: string;
+  type?: "module" | "commonjs";
+  exports?: Record<string, unknown>;
+  scripts: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  dependencies?: Record<string, string>;
+  packageManager?: string;
+  engines?: Record<string, string>;
+  workspaces?: string[];
+}

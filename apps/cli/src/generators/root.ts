@@ -1,10 +1,11 @@
 import { execPrefix } from "../utils/consts";
-import type { IConfig } from "../utils/types";
+import type { IConfig, PackageJson } from "../utils/types";
 
 export function generateRootPackageJson(config: IConfig) {
-  const _packageJson = {
+  const packageJson: PackageJson = {
     name: config.name,
     private: true,
+    version: "0.0.0",
     scripts: {
       build: "turbo run build",
       dev: "turbo run dev",
@@ -33,11 +34,11 @@ export function generateRootPackageJson(config: IConfig) {
     },
   };
 
-  // Bun does't support this field.
-  if (config.packageManager === "pnpm") {
-    const { packageManager: _, ...packageJson } = _packageJson;
-    return packageJson;
+  if (config.packageManager === "bun") {
+    packageJson.workspaces = ["apps/*", "packages/*"];
+    // Bun does't support this field.
+    delete packageJson.packageManager;
   }
 
-  return _packageJson;
+  return packageJson;
 }

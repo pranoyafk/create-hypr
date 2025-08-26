@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev:cli": "node ./apps/cli/dist/index.js",
+    "dev:cli": "bun run build; node ./apps/cli/dist/index.js",
     "check": "bunx biome check --write"
   },
   "devDependencies": {

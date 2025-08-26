@@ -1,4 +1,4 @@
-import type { TDatabase, TPackageManager } from "../utils/types";
+import type { PackageJson, TDatabase, TPackageManager } from "../utils/types";
 
 export function generateConfig(database: TDatabase) {
   return `
@@ -18,7 +18,7 @@ export function generateConfig(database: TDatabase) {
 }
 
 export function generateDrizzlePackageJson(packageManager: TPackageManager, database: TDatabase) {
-  const packageJson = {
+  const packageJson: PackageJson = {
     name: "@hypr-stack/db",
     version: "0.0.0",
     private: true,
