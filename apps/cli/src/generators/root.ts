@@ -1,8 +1,9 @@
 import * as path from "node:path";
+import * as fs from "fs-extra";
 import { execPrefix } from "../utils/consts";
 import type { IPackageJson, TPackageManager } from "../utils/types";
 
-export function generateRootPackageJson(targetDir: string, packageManager: TPackageManager) {
+export async function generateRootPackageJson(targetDir: string, packageManager: TPackageManager) {
   const packageJson: IPackageJson = {
     name: path.basename(targetDir),
     private: true,
@@ -39,6 +40,5 @@ export function generateRootPackageJson(targetDir: string, packageManager: TPack
     packageJson.workspaces = ["apps/*", "packages/*"];
     packageJson.packageManager = "bun@1.2.20";
   }
-
-  return packageJson;
+  await fs.writeJSON(path.join(targetDir, "package.json"), packageJson, { spaces: 2 });
 }

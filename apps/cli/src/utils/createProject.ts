@@ -40,8 +40,7 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
     await fs.copy(path.join(TEMPLATE_DIR, `extras/${config.database}`), targetDir);
 
     // create the root package json
-    const rootPackageJson = generateRootPackageJson(targetDir, config.packageManager);
-    await fs.writeJSON(path.join(targetDir, "package.json"), rootPackageJson, { spaces: 2 });
+    await generateRootPackageJson(targetDir, config.packageManager);
 
     // create the drizzle package.json and config
     const drizzlePackageJson = generateDrizzlePackageJson(config.packageManager, config.database);
