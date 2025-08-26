@@ -1,6 +1,6 @@
-import type { IConfig, IPackageJson, TDatabase } from "../utils/types";
+import type { IPackageJson, TDatabase, TPackageManager } from "../utils/types";
 
-export function generateDrizzleConfig(config: IConfig) {
+export function generateDrizzleConfig(database: TDatabase) {
   return `
   import { env } from "@hypr-stack/env/server";
   import { defineConfig } from "drizzle-kit";
@@ -8,7 +8,7 @@ export function generateDrizzleConfig(config: IConfig) {
   export default defineConfig({
     out: "./drizzle",
     schema: "./src/schema/index.ts",
-    dialect: "${config.database}",
+    dialect: "${database}",
     dbCredentials: {
       url: env.DATABASE_URL,
     },
@@ -17,7 +17,7 @@ export function generateDrizzleConfig(config: IConfig) {
   `;
 }
 
-export function generateDrizzlePackageJson(config: IConfig) {
+export function generateDrizzlePackageJson(packageManager: TPackageManager, database: TDatabase) {
   const packageJson: IPackageJson = {
     name: "@hypr-stack/db",
     version: "0.0.0",
@@ -36,13 +36,13 @@ export function generateDrizzlePackageJson(config: IConfig) {
       },
     },
     scripts: {
-      generate: `${config.packageManager} drizzle-kit generate`,
-      migrate: `${config.packageManager} drizzle-kit migrate`,
-      push: `${config.packageManager} drizzle-kit push`,
-      pull: `${config.packageManager} drizzle-kit pull`,
-      check: `${config.packageManager} drizzle-kit check`,
-      up: `${config.packageManager} drizzle-kit up`,
-      studio: `${config.packageManager} drizzle-kit studio`,
+      generate: `${packageManager} drizzle-kit generate`,
+      migrate: `${packageManager} drizzle-kit migrate`,
+      push: `${packageManager} drizzle-kit push`,
+      pull: `${packageManager} drizzle-kit pull`,
+      check: `${packageManager} drizzle-kit check`,
+      up: `${packageManager} drizzle-kit up`,
+      studio: `${packageManager} drizzle-kit studio`,
     },
     dependencies: {
       "@hypr-stack/env": "workspace:*",
@@ -62,7 +62,7 @@ export function generateDrizzlePackageJson(config: IConfig) {
 
   packageJson.dependencies = {
     ...packageJson.dependencies,
-    ...dbDependencies[config.database],
+    ...dbDependencies[database],
   };
 
   return packageJson;

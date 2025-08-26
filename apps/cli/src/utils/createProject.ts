@@ -1,16 +1,16 @@
 import * as path from "node:path";
 import * as p from "@clack/prompts";
+import { execa } from "execa";
 import * as fs from "fs-extra";
 import {
   generateDrizzleConfig,
   generateDrizzlePackageJson,
   generateRootPackageJson,
 } from "../generators";
-import type { IConfig, TCreateProjectReturn } from "./types";
-import { bunfigContent, pnpmWorkspaceContent } from "./consts";
 import { generateEnvFiles } from "../generators/env";
-import { execa } from "execa";
 import { generateServerAuthConfig } from "../generators/server-auth";
+import { bunfigContent, pnpmWorkspaceContent } from "./consts";
+import type { IConfig, TCreateProjectReturn } from "./types";
 
 const TEMPLATE_DIR = path.resolve(__dirname, "../../templates");
 console.log(TEMPLATE_DIR);
@@ -43,8 +43,8 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
     await fs.writeJSON(path.join(targetDir, "package.json"), rootPackageJson, { spaces: 2 });
 
     // create the drizzle package.json and config
-    const drizzlePackageJson = generateDrizzlePackageJson(config);
-    const drizzleConfig = generateDrizzleConfig(config);
+    const drizzlePackageJson = generateDrizzlePackageJson(config.packageManager, config.database);
+    const drizzleConfig = generateDrizzleConfig(config.database);
     await fs.writeJSON(path.join(targetDir, "packages", "db", "package.json"), drizzlePackageJson, {
       spaces: 2,
     });
