@@ -1,9 +1,10 @@
+import * as path from "node:path";
 import { execPrefix } from "../utils/consts";
 import type { IPackageJson, TPackageManager } from "../utils/types";
 
 export function generateRootPackageJson(targetDir: string, packageManager: TPackageManager) {
   const packageJson: IPackageJson = {
-    name: targetDir,
+    name: path.basename(targetDir),
     private: true,
     version: "0.0.0",
     scripts: {
@@ -36,8 +37,7 @@ export function generateRootPackageJson(targetDir: string, packageManager: TPack
 
   if (packageManager === "bun") {
     packageJson.workspaces = ["apps/*", "packages/*"];
-    // Bun does't support this field.
-    delete packageJson.packageManager;
+    packageJson.packageManager = "bun@1.2.20";
   }
 
   return packageJson;
