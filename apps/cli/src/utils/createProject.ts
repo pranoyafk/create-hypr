@@ -6,6 +6,7 @@ import {
   generateDrizzleConfig,
   generateDrizzlePackageJson,
   generateRootPackageJson,
+  generateUiPackageJson,
 } from "../generators";
 import { generateEnvFiles } from "../generators/env";
 import { generateServerAuthConfig } from "../generators/server-auth";
@@ -50,6 +51,11 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
     });
     await fs.writeFile(path.join(targetDir, "packages", "db", "drizzle.config.ts"), drizzleConfig);
 
+    // create the packages/ui package.json
+    const uiPackageJson = generateUiPackageJson(config.packageManager);
+    await fs.writeJSON(path.join(targetDir, "packages", "ui", "package.json"), uiPackageJson, {
+      spaces: 2,
+    });
     // add package manager specifig configs
     if (config.packageManager === "bun") {
       await fs.writeFile(path.join(targetDir, "bunfig.toml"), bunfigContent);

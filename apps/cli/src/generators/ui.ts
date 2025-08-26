@@ -1,7 +1,7 @@
 import { execPrefix } from "../utils/consts";
-import type { IConfig, IPackageJson } from "../utils/types";
+import type { IPackageJson, TPackageManager } from "../utils/types";
 
-export function generateUiPackageJson(config: IConfig) {
+export function generateUiPackageJson(packageManager: TPackageManager) {
   const packageJson: IPackageJson = {
     name: "@hypr-stack/ui",
     version: "0.0.0",
@@ -16,7 +16,7 @@ export function generateUiPackageJson(config: IConfig) {
       "./postcss.config": "./postcss.config.mjs",
     },
     scripts: {
-      add: `${execPrefix[config.packageManager]} shadcn@latest add`,
+      add: `${execPrefix[packageManager]} shadcn@latest add`,
       refresh: "node scripts/refresh-imports.js",
     },
     dependencies: {

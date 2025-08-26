@@ -1,5 +1,5 @@
 import { execPrefix } from "../utils/consts";
-import type { IConfig, IPackageJson, TPackageManager } from "../utils/types";
+import type { IPackageJson, TPackageManager } from "../utils/types";
 
 export function generateRootPackageJson(targetDir: string, packageManager: TPackageManager) {
   const packageJson: IPackageJson = {
