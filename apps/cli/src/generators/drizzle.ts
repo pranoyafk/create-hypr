@@ -2,15 +2,17 @@ import type { IPackageJson, TDatabase, TPackageManager } from "../utils/types";
 
 export function generateDrizzleConfig(database: TDatabase) {
   return `
-  import { env } from "@hypr-stack/env/server";
+  import * as path from 'node:path';
   import { defineConfig } from "drizzle-kit";
+
+    const dbPath = path.resolve(process.cwd(), "../../../local.db") // Ensures root-level file
 
   export default defineConfig({
     out: "./drizzle",
     schema: "./src/schema/index.ts",
     dialect: "${database}",
     dbCredentials: {
-      url: env.DATABASE_URL,
+      url: 'file:'+dbPath,
     },
   });
 
