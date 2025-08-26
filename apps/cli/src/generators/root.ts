@@ -1,8 +1,8 @@
 import { execPrefix } from "../utils/consts";
-import type { IConfig, PackageJson } from "../utils/types";
+import type { IConfig, IPackageJson } from "../utils/types";
 
 export function generateRootPackageJson(config: IConfig) {
-  const packageJson: PackageJson = {
+  const packageJson: IPackageJson = {
     name: config.name,
     private: true,
     version: "0.0.0",

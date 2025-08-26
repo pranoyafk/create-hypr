@@ -1,6 +1,6 @@
-import type { PackageJson, TDatabase, TPackageManager } from "../utils/types";
+import type { IConfig, IPackageJson, TDatabase } from "../utils/types";
 
-export function generateConfig(database: TDatabase) {
+export function generateDrizzleConfig(config: IConfig) {
   return `
   import { env } from "@hypr-stack/env/server";
   import { defineConfig } from "drizzle-kit";
@@ -8,7 +8,7 @@ export function generateConfig(database: TDatabase) {
   export default defineConfig({
     out: "./drizzle",
     schema: "./src/schema/index.ts",
-    dialect: "${database}",
+    dialect: "${config.database}",
     dbCredentials: {
       url: env.DATABASE_URL,
     },
@@ -17,8 +17,8 @@ export function generateConfig(database: TDatabase) {
   `;
 }
 
-export function generateDrizzlePackageJson(packageManager: TPackageManager, database: TDatabase) {
-  const packageJson: PackageJson = {
+export function generateDrizzlePackageJson(config: IConfig) {
+  const packageJson: IPackageJson = {
     name: "@hypr-stack/db",
     version: "0.0.0",
     private: true,
@@ -36,13 +36,13 @@ export function generateDrizzlePackageJson(packageManager: TPackageManager, data
       },
     },
     scripts: {
-      generate: `${packageManager} drizzle-kit generate`,
-      migrate: `${packageManager} drizzle-kit migrate`,
-      push: `${packageManager} drizzle-kit push`,
-      pull: `${packageManager} drizzle-kit pull`,
-      check: `${packageManager} drizzle-kit check`,
-      up: `${packageManager} drizzle-kit up`,
-      studio: `${packageManager} drizzle-kit studio`,
+      generate: `${config.packageManager} drizzle-kit generate`,
+      migrate: `${config.packageManager} drizzle-kit migrate`,
+      push: `${config.packageManager} drizzle-kit push`,
+      pull: `${config.packageManager} drizzle-kit pull`,
+      check: `${config.packageManager} drizzle-kit check`,
+      up: `${config.packageManager} drizzle-kit up`,
+      studio: `${config.packageManager} drizzle-kit studio`,
     },
     dependencies: {
       "@hypr-stack/env": "workspace:*",
@@ -62,7 +62,7 @@ export function generateDrizzlePackageJson(packageManager: TPackageManager, data
 
   packageJson.dependencies = {
     ...packageJson.dependencies,
-    ...dbDependencies[database],
+    ...dbDependencies[config.database],
   };
 
   return packageJson;

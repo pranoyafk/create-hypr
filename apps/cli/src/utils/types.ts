@@ -16,7 +16,7 @@ export interface IConfig {
   installDependencies: boolean;
 }
 
-export interface PackageJson {
+export interface IPackageJson {
   name: string;
   private: boolean;
   version: string;
