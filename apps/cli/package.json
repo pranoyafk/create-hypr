@@ -1,6 +1,6 @@
 {
   "name": "create-hypr",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "A modern starter CLI to scaffold fullstack apps with Turborepo, TanStack, and more.",
   "module": "src/index.ts",
   "type": "module",
@@ -14,7 +14,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pranoymajumdar/create-hypr.git"
+    "url": "git+https://github.com/pranoymajumdar/create-hypr.git",
+    "directory": "apps/cli"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "homepage": "https://github.com/pranoymajumdar/create-hypr#readme",
   "keywords": [
@@ -30,11 +34,9 @@
   ],
   "author": "Pranoy Majumdar",
   "license": "MIT",
-  "readme": "../../README.md",
   "files": [
     "dist",
     "templates",
-    "../../README.md",
     "package.json"
   ],
   "engines": {
