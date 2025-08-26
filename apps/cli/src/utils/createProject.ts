@@ -14,7 +14,7 @@ import { bunfigContent, pnpmWorkspaceContent } from "./consts";
 import type { IConfig, TCreateProjectReturn } from "./types";
 
 const TEMPLATE_DIR = path.resolve(__dirname, "../../templates");
-console.log(TEMPLATE_DIR);
+
 export async function createProject(config: IConfig): Promise<TCreateProjectReturn> {
   const spinner = p.spinner();
 
