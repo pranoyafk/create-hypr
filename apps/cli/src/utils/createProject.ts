@@ -47,10 +47,8 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
     await generateDrizzleConfig(targetDir, config.database);
 
     // create the packages/ui package.json
-    const uiPackageJson = generateUiPackageJson(config.packageManager);
-    await fs.writeJSON(path.join(targetDir, "packages", "ui", "package.json"), uiPackageJson, {
-      spaces: 2,
-    });
+    await generateUiPackageJson(targetDir, config.packageManager);
+
     // add package manager specifig configs
     if (config.packageManager === "bun") {
       await fs.writeFile(path.join(targetDir, "bunfig.toml"), bunfigContent);
