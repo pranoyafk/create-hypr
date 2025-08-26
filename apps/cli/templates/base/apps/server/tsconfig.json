@@ -1,0 +1,7 @@
+{
+  "extends": "@hypr-stack/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
+  "exclude": ["node_modules"]
+}
