@@ -48,6 +48,18 @@ export async function getAnswers() {
             },
           ],
         }) as Promise<IConfig["database"]>,
+      packageManager: () =>
+        p.select({
+          message: "Select a package manager",
+          options: [
+            {
+              value: "bun",
+            },
+            {
+              value: "pnpm",
+            },
+          ],
+        }) as Promise<IConfig["packageManager"]>,
       installDependencies: () =>
         p.confirm({
           message: "Install dependencies after setup?",

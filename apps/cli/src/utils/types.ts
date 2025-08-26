@@ -1,5 +1,6 @@
 export type TFrontend = "tanstack-router" | "tanstack-start";
 export type TDatabase = "postgres" | "sqlite" | "mysql";
+export type TPackageManager = "pnpm" | "bun";
 
 export type TCreateProjectReturn =
   | {
@@ -11,5 +12,6 @@ export interface IConfig {
   name: string;
   frontend: TFrontend;
   database: TDatabase;
+  packageManager: TPackageManager;
   installDependencies: boolean;
 }
