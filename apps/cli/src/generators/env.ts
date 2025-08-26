@@ -3,9 +3,14 @@ import * as fs from "fs-extra";
 import type { TDatabase } from "../utils/types";
 
 export async function generateEnvFiles(targetDir: string, database: TDatabase) {
+  const databaseUrl = {
+    sqlite: "file:local.db",
+    mysql: "mysql://root:password@localhost:3306/db-name",
+    postgres: "postgres://postgres:password@localhost:5432/db-name",
+  };
   const serverEnv = [
     "# Server environment variables (never exposed to client)",
-    `DATABASE_URL=${database === "sqlite" ? "file:local.db" : "postgres://postgres:password@host:port/db-name"}`,
+    `DATABASE_URL=${databaseUrl[database]}`,
     "BETTER_AUTH_SECRET=your-auth-secret # Generate with: openssl rand -base64 32",
     "BETTER_AUTH_URL=http://localhost:8000",
     "NODE_ENV=development",

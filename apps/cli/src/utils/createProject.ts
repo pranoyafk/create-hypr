@@ -9,6 +9,8 @@ import {
 import type { IConfig, TCreateProjectReturn } from "./types";
 import { bunfigContent, pnpmWorkspaceContent } from "./consts";
 import { generateEnvFiles } from "../generators/env";
+import { execa } from "execa";
+import { generateServerAuthConfig } from "../generators/server-auth";
 
 const TEMPLATE_DIR = path.resolve(__dirname, "../../templates");
 console.log(TEMPLATE_DIR);
@@ -57,7 +59,24 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
 
     // Create the .env files
     await generateEnvFiles(targetDir, config.database);
+    // Create the server auth config file
+    await generateServerAuthConfig(targetDir, config.database);
 
+    if (config.installDependencies) {
+      try {
+        spinner.message("Installing dependencies...");
+        await execa(config.packageManager, ["install"], {
+          cwd: targetDir,
+          stdio: "pipe",
+          env: { ...process.env, NODE_ENV: "development" },
+          timeout: 30000,
+          preferLocal: true,
+        });
+        spinner.message("Dependencies installed successfully!");
+      } catch {
+        spinner.message("Failed to install dependencies!");
+      }
+    }
     spinner.stop("Project created successfully!");
     return { success: true };
   } catch (error) {
