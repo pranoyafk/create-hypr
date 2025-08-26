@@ -1,5 +1,4 @@
 import * as p from "@clack/prompts";
-import { pathExistsSync } from "fs-extra";
 import type { IConfig } from "./types";
 
 export async function getAnswers() {
@@ -8,12 +7,6 @@ export async function getAnswers() {
       name: () =>
         p.text({
           message: "What's your project name?",
-          validate: (value: string) => {
-            if (value.length === 0) return "⚠️ Project name is required";
-            if (pathExistsSync(value)) {
-              return `A folder named "${value}" already exists. Please choose a different name.`;
-            }
-          },
         }) as Promise<IConfig["name"]>,
 
       frontend: () =>
