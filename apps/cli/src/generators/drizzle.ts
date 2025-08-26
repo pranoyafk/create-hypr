@@ -5,7 +5,7 @@ export function generateDrizzleConfig(database: TDatabase) {
   import * as path from 'node:path';
   import { defineConfig } from "drizzle-kit";
 
-    const dbPath = path.resolve(process.cwd(), "../../local.db") // Ensures root-level file
+  const dbPath = path.resolve(process.cwd(), "../../local.db") // Ensures root-level file
 
   export default defineConfig({
     out: "./drizzle",
