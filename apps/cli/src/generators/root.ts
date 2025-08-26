@@ -1,26 +1,26 @@
 import { execPrefix } from "../utils/consts";
-import type { IConfig, IPackageJson } from "../utils/types";
+import type { IConfig, IPackageJson, TPackageManager } from "../utils/types";
 
-export function generateRootPackageJson(config: IConfig) {
+export function generateRootPackageJson(targetDir: string, packageManager: TPackageManager) {
   const packageJson: IPackageJson = {
-    name: config.name,
+    name: targetDir,
     private: true,
     version: "0.0.0",
     scripts: {
       build: "turbo run build",
       dev: "turbo run dev",
-      lint: `${execPrefix[config.packageManager]} biome lint`,
-      format: `${execPrefix[config.packageManager]} biome format --write`,
-      check: `${execPrefix[config.packageManager]} biome check --write`,
-      "db:generate": `${config.packageManager} --filter @hypr-stack/db generate`,
-      "db:migrate": `${config.packageManager} --filter @hypr-stack/db migrate`,
-      "db:push": `${config.packageManager} --filter @hypr-stack/db push`,
-      "db:pull": `${config.packageManager} --filter @hypr-stack/db pull`,
-      "db:check": `${config.packageManager} --filter @hypr-stack/db check`,
-      "db:up": `${config.packageManager} --filter @hypr-stack/db up`,
-      "db:studio": `${config.packageManager} --filter @hypr-stack/db studio`,
-      "ui:add": `${config.packageManager} --filter @hypr-stack/ui run add`,
-      "ui:refresh": `${config.packageManager} --filter @hypr-stack/ui run refresh`,
+      lint: `${execPrefix[packageManager]} biome lint`,
+      format: `${execPrefix[packageManager]} biome format --write`,
+      check: `${execPrefix[packageManager]} biome check --write`,
+      "db:generate": `${packageManager} --filter @hypr-stack/db generate`,
+      "db:migrate": `${packageManager} --filter @hypr-stack/db migrate`,
+      "db:push": `${packageManager} --filter @hypr-stack/db push`,
+      "db:pull": `${packageManager} --filter @hypr-stack/db pull`,
+      "db:check": `${packageManager} --filter @hypr-stack/db check`,
+      "db:up": `${packageManager} --filter @hypr-stack/db up`,
+      "db:studio": `${packageManager} --filter @hypr-stack/db studio`,
+      "ui:add": `${packageManager} --filter @hypr-stack/ui run add`,
+      "ui:refresh": `${packageManager} --filter @hypr-stack/ui run refresh`,
     },
     devDependencies: {
       "@biomejs/biome": "2.2.2",
@@ -34,7 +34,7 @@ export function generateRootPackageJson(config: IConfig) {
     },
   };
 
-  if (config.packageManager === "bun") {
+  if (packageManager === "bun") {
     packageJson.workspaces = ["apps/*", "packages/*"];
     // Bun does't support this field.
     delete packageJson.packageManager;
