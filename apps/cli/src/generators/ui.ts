@@ -1,0 +1,45 @@
+import { execPrefix } from "../utils/consts";
+import type { IConfig } from "../utils/types";
+
+export function generateUiPackageJson(config: IConfig) {
+  const packageJson = {
+    name: "@hypr-stack/ui",
+    version: "0.0.0",
+    private: true,
+    type: "module",
+    exports: {
+      ".": "./src/index.ts",
+      "./components/*": "./src/components/*",
+      "./lib/*": "./src/lib/*",
+      "./hooks/*": "./src/hooks/*",
+      "./globals.css": "./src/styles/globals.css",
+      "./postcss.config": "./postcss.config.mjs",
+    },
+    scripts: {
+      add: `${execPrefix[config.packageManager]} shadcn@latest add`,
+      refresh: "node scripts/refresh-imports.js",
+    },
+    dependencies: {
+      "@radix-ui/react-dropdown-menu": "^2.1.16",
+      "@radix-ui/react-label": "^2.1.7",
+      "@radix-ui/react-slot": "^1.2.3",
+      "@tailwindcss/postcss": "^4.1.12",
+      "class-variance-authority": "^0.7.1",
+      clsx: "^2.1.1",
+      "lucide-react": "^0.541.0",
+      "next-themes": "^0.4.6",
+      postcss: "^8.5.6",
+      sonner: "^2.0.7",
+      "tailwind-merge": "^3.3.1",
+      tailwindcss: "^4.1.12",
+      "tw-animate-css": "^1.3.7",
+    },
+    devDependencies: {
+      "@hypr-stack/tsconfig": "workspace:*",
+      "@types/react": "^19.1.10",
+      react: "^19.1.1",
+    },
+  };
+
+  return packageJson;
+}
