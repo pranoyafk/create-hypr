@@ -10,6 +10,11 @@ if (process.env.NODE_ENV !== "production") {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const envPath = path.resolve(__dirname, "../../../.env");
   dotenv.config({ path: envPath });
+} else {
+  // In production, log a warning if .env is not loaded (optional)
+  if (!process.env.DATABASE_URL) {
+    console.warn("Warning: DATABASE_URL not set in production environment variables.");
+  }
 }
 
 export const env = createEnv({
@@ -22,9 +27,7 @@ export const env = createEnv({
     CORS_ORIGIN: z.url(),
     BETTER_AUTH_URL: z.url(), // Base url of your server
     BETTER_AUTH_SECRET: z.string().min(32), // Ensure minimum length for security
-    NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   },
 
   runtimeEnv: process.env,

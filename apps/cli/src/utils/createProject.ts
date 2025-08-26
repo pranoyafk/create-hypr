@@ -8,6 +8,7 @@ import {
 } from "../generators";
 import type { IConfig, TCreateProjectReturn } from "./types";
 import { bunfigContent, pnpmWorkspaceContent } from "./consts";
+import { generateEnvFiles } from "../generators/env";
 
 const TEMPLATE_DIR = path.resolve(__dirname, "../../templates");
 console.log(TEMPLATE_DIR);
@@ -53,6 +54,9 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
     } else {
       await fs.writeFile(path.join(targetDir, "pnpm-workspace.yaml"), pnpmWorkspaceContent);
     }
+
+    // Create the .env files
+    await generateEnvFiles(targetDir, config.database);
 
     spinner.stop("Project created successfully!");
     return { success: true };
