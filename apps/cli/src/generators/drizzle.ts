@@ -1,7 +1,9 @@
+import * as path from "node:path";
+import * as fs from "fs-extra";
 import type { IPackageJson, TDatabase, TPackageManager } from "../utils/types";
 
-export function generateDrizzleConfig(database: TDatabase) {
-  return `
+export async function generateDrizzleConfig(targetDir: string, database: TDatabase) {
+  const content = `
   import * as path from 'node:path';
   import { defineConfig } from "drizzle-kit";
 
@@ -17,9 +19,15 @@ export function generateDrizzleConfig(database: TDatabase) {
   });
 
   `;
+
+  await fs.writeFile(path.join(targetDir, "packages", "db", "drizzle.config.ts"), content);
 }
 
-export function generateDrizzlePackageJson(packageManager: TPackageManager, database: TDatabase) {
+export async function generateDrizzlePackageJson(
+  targetDir: string,
+  packageManager: TPackageManager,
+  database: TDatabase,
+) {
   const packageJson: IPackageJson = {
     name: "@hypr-stack/db",
     version: "0.0.0",
@@ -67,5 +75,7 @@ export function generateDrizzlePackageJson(packageManager: TPackageManager, data
     ...dbDependencies[database],
   };
 
-  return packageJson;
+  await fs.writeJSON(path.join(targetDir, "packages", "db", "package.json"), packageJson, {
+    spaces: 2,
+  });
 }
