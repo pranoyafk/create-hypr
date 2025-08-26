@@ -8,7 +8,7 @@ import {
   generateRootPackageJson,
   generateUiPackageJson,
 } from "../generators";
-import { generateEnvFiles } from "../generators/env";
+import { generateEnvFiles, generateServerEnvFile } from "../generators/env";
 import { generateServerAuthConfig } from "../generators/server-auth";
 import { bunfigContent, pnpmWorkspaceContent } from "./consts";
 import type { IConfig, TCreateProjectReturn } from "./types";
@@ -65,6 +65,10 @@ export async function createProject(config: IConfig): Promise<TCreateProjectRetu
 
     // Create the .env files
     await generateEnvFiles(targetDir, config.database);
+
+    // Create server env file
+    await generateServerEnvFile(targetDir, config.database);
+
     // Create the server auth config file
     await generateServerAuthConfig(targetDir, config.database);
 
