@@ -1,4 +1,5 @@
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as p from "@clack/prompts";
 import { execa } from "execa";
 import * as fs from "fs-extra";
@@ -12,85 +13,101 @@ import { generateEnvFiles, generateServerEnvFile } from "../generators/env";
 import { generateServerAuthConfig } from "../generators/server-auth";
 import { bunfigContent, pnpmWorkspaceContent } from "./consts";
 import type { IConfig, TCreateProjectReturn } from "./types";
-import { fileURLToPath } from "node:url";
 
+/**
+ * Get the absolute path to the templates directory
+ * Uses ES modules URL resolution for reliable path handling across different environments
+ */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const TEMPLATE_DIR = path.resolve(__dirname, "../templates");
 
+/**
+ * Executes all project scaffolding operations in parallel for better performance
+ *
+ * @param targetDir - Absolute path to the project directory
+ * @param config - User's project configuration choices
+ * @throws {Error} If any file operation fails
+ */
+export async function scaffoldProjectFiles(targetDir: string, config: IConfig) {
+  await Promise.all([
+    // Template file operations
+    fs.copy(path.join(TEMPLATE_DIR, "base"), targetDir),
+    fs.copy(path.join(TEMPLATE_DIR, `extras/${config.frontend}`), targetDir),
+    fs.copy(path.join(TEMPLATE_DIR, `extras/${config.database}`), targetDir),
+
+    // Package.json generation
+    generateRootPackageJson(targetDir, config.packageManager),
+    generateDrizzlePackageJson(targetDir, config.packageManager, config.database),
+    generateUiPackageJson(targetDir, config.packageManager),
+
+    // Configuration file generation
+    generateDrizzleConfig(targetDir, config.database),
+    generateEnvFiles(targetDir, config.database),
+    generateServerEnvFile(targetDir, config.database),
+    generateServerAuthConfig(targetDir, config.database),
+  ]);
+}
+
+/**
+ * Creates a new Hypr Stack project based on user configuration
+ *
+ * @param config - Complete project configuration from user prompts
+ * @returns Promise resolving to success/failure result with error details
+ */
 export async function createProject(config: IConfig): Promise<TCreateProjectReturn> {
   const spinner = p.spinner();
-  // ensure the target dir
+  // Convert project name to absolute target directory path
   const targetDir = path.join(process.cwd(), config.name);
 
   try {
-    // create the project dir if its not exists
+    // Ensure target directory exists (creates if missing)
     await fs.ensureDir(targetDir);
 
-    // if the targetDir already has files, ask for confirmation
+    // Check if directory is empty and prompt user for confirmation if not
+    // This prevents accidentally overwriting existing projects
     const files = await fs.readdir(targetDir);
     if (files.length > 0) {
       const shouldContinue = await p.confirm({
         message: `Directory ${config.name} already exists and is not empty. Continue?`,
         initialValue: false,
       });
+
+      // User declined to continue with non-empty directory
       if (!shouldContinue) {
         return { success: false, error: "Directory already exists" };
       }
     }
 
+    // Project scaffolding
     spinner.start("Creating your Hypr Stack project...");
 
-    // change the config.name to targetDir
-    config.name = targetDir;
+    // Execute all file operations and configurations in parallel
+    await scaffoldProjectFiles(targetDir, config);
 
-    // copy the base template
-    await fs.copy(path.join(TEMPLATE_DIR, "base"), targetDir);
-
-    // copy the frontend
-    await fs.copy(path.join(TEMPLATE_DIR, `extras/${config.frontend}`), targetDir);
-
-    // copy the database
-    await fs.copy(path.join(TEMPLATE_DIR, `extras/${config.database}`), targetDir);
-
-    // create the root package json
-    await generateRootPackageJson(targetDir, config.packageManager);
-
-    // create the drizzle package.json and config
-    await generateDrizzlePackageJson(targetDir, config.packageManager, config.database);
-    await generateDrizzleConfig(targetDir, config.database);
-
-    // create the packages/ui package.json
-    await generateUiPackageJson(targetDir, config.packageManager);
-
-    // add package manager specifig configs
+    // Add package manager specific configuration files
+    // These files control workspace behavior and package resolution
     if (config.packageManager === "bun") {
       await fs.writeFile(path.join(targetDir, "bunfig.toml"), bunfigContent);
     } else {
       await fs.writeFile(path.join(targetDir, "pnpm-workspace.yaml"), pnpmWorkspaceContent);
     }
 
-    // Create the .env files
-    await generateEnvFiles(targetDir, config.database);
-
-    // Create server env file
-    await generateServerEnvFile(targetDir, config.database);
-
-    // Create the server auth config file
-    await generateServerAuthConfig(targetDir, config.database);
-
+    // Dependencies installation
     if (config.installDependencies) {
       try {
         spinner.message("Installing dependencies...");
         await execa(config.packageManager, ["install"], {
           cwd: targetDir,
-          stdio: "pipe",
+          stdio: "pipe", // Capture output instead of streaming to console
           env: { ...process.env, NODE_ENV: "development" },
-          timeout: 30000,
-          preferLocal: true,
+          timeout: 30000, // 30 second timeout to prevent hanging
+          preferLocal: true, // Use local package manager if available
         });
         spinner.message("Dependencies installed successfully!");
       } catch {
+        // Continue project creation even if dependency installation fails
+        // User can manually install dependencies later
         spinner.message("Failed to install dependencies!");
       }
     }
