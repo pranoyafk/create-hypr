@@ -12,20 +12,34 @@ import { generateEnvFiles, generateServerEnvFile } from "../generators/env";
 import { generateServerAuthConfig } from "../generators/server-auth";
 import { bunfigContent, pnpmWorkspaceContent } from "./consts";
 import type { IConfig, TCreateProjectReturn } from "./types";
+import { fileURLToPath } from "node:url";
 
-const TEMPLATE_DIR = path.resolve(__dirname, "../../templates");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const TEMPLATE_DIR = path.resolve(__dirname, "../templates");
 
 export async function createProject(config: IConfig): Promise<TCreateProjectReturn> {
   const spinner = p.spinner();
+  // ensure the target dir
+  const targetDir = path.join(process.cwd(), config.name);
 
   try {
-    spinner.start("Creating your Hypr Stack project...");
-
-    // ensure the target dir
-    const targetDir = path.join(process.cwd(), config.name);
-
-    // create the project dir
+    // create the project dir if its not exists
     await fs.ensureDir(targetDir);
+
+    // if the targetDir already has files, ask for confirmation
+    const files = await fs.readdir(targetDir);
+    if (files.length > 0) {
+      const shouldContinue = await p.confirm({
+        message: `Directory ${config.name} already exists and is not empty. Continue?`,
+        initialValue: false,
+      });
+      if (!shouldContinue) {
+        return { success: false, error: "Directory already exists" };
+      }
+    }
+
+    spinner.start("Creating your Hypr Stack project...");
 
     // change the config.name to targetDir
     config.name = targetDir;
