@@ -7,6 +7,12 @@ export async function getAnswers() {
       name: () =>
         p.text({
           message: "What's your project name?",
+          validate: (value) => {
+            if (!value) return "Project name is required";
+            if (!/^[a-zA-Z0-9-_]+$/.test(value))
+              return "Project name can only contain letters, numbers, hyphens, and underscores";
+            return undefined;
+          },
         }) as Promise<IConfig["name"]>,
 
       frontend: () =>
