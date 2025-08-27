@@ -2,7 +2,7 @@ import * as path from "node:path";
 import * as fs from "fs-extra";
 import type { TDatabase } from "../utils/types";
 
-export async function generateServerAuthConfig(targetDir: string, database: TDatabase) {
+export async function generateServerAuthConfig(projectDirectory: string, database: TDatabase) {
   const provider: Record<TDatabase, string> = {
     postgres: "pg",
     mysql: "mysql",
@@ -33,5 +33,8 @@ export async function generateServerAuthConfig(targetDir: string, database: TDat
   });
 `;
 
-  await fs.writeFile(path.join(targetDir, "packages", "auth", "src", "server", "auth.ts"), config);
+  await fs.writeFile(
+    path.join(projectDirectory, "packages", "auth", "src", "server", "auth.ts"),
+    config,
+  );
 }

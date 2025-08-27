@@ -2,7 +2,7 @@ import * as path from "node:path";
 import * as fs from "fs-extra";
 import type { IPackageJson, TDatabase, TPackageManager } from "../utils/types";
 
-export async function generateDrizzleConfig(targetDir: string, database: TDatabase) {
+export async function generateDrizzleConfig(projectDirectory: string, database: TDatabase) {
   const content = `
   import * as path from 'node:path';
   import { defineConfig } from "drizzle-kit";
@@ -20,11 +20,11 @@ export async function generateDrizzleConfig(targetDir: string, database: TDataba
 
   `;
 
-  await fs.writeFile(path.join(targetDir, "packages", "db", "drizzle.config.ts"), content);
+  await fs.writeFile(path.join(projectDirectory, "packages", "db", "drizzle.config.ts"), content);
 }
 
 export async function generateDrizzlePackageJson(
-  targetDir: string,
+  projectDirectory: string,
   packageManager: TPackageManager,
   database: TDatabase,
 ) {
@@ -75,7 +75,7 @@ export async function generateDrizzlePackageJson(
     ...dbDependencies[database],
   };
 
-  await fs.writeJSON(path.join(targetDir, "packages", "db", "package.json"), packageJson, {
+  await fs.writeJSON(path.join(projectDirectory, "packages", "db", "package.json"), packageJson, {
     spaces: 2,
   });
 }

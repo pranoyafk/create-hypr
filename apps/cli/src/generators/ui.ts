@@ -3,7 +3,10 @@ import * as fs from "fs-extra";
 import { execPrefix } from "../utils/consts";
 import type { IPackageJson, TPackageManager } from "../utils/types";
 
-export async function generateUiPackageJson(targetDir: string, packageManager: TPackageManager) {
+export async function generateUiPackageJson(
+  projectDirectory: string,
+  packageManager: TPackageManager,
+) {
   const packageJson: IPackageJson = {
     name: "@hypr-stack/ui",
     version: "0.0.0",
@@ -43,7 +46,7 @@ export async function generateUiPackageJson(targetDir: string, packageManager: T
     },
   };
 
-  await fs.writeJSON(path.join(targetDir, "packages", "ui", "package.json"), packageJson, {
+  await fs.writeJSON(path.join(projectDirectory, "packages", "ui", "package.json"), packageJson, {
     spaces: 2,
   });
 }

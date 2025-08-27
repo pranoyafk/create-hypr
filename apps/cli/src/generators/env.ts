@@ -2,7 +2,7 @@ import * as path from "node:path";
 import * as fs from "fs-extra";
 import type { TDatabase } from "../utils/types";
 
-export async function generateEnvFiles(targetDir: string, database: TDatabase) {
+export async function generateEnvFiles(projectDirectory: string, database: TDatabase) {
   const databaseUrl = {
     mysql: "mysql://root:password@localhost:3306/db-name",
     postgres: "postgres://postgres:password@localhost:5432/db-name",
@@ -23,11 +23,11 @@ export async function generateEnvFiles(targetDir: string, database: TDatabase) {
     lines[1] = `DATABASE_URL=${databaseUrl[database]}`;
   }
 
-  await fs.writeFile(path.join(targetDir, ".env"), lines.join("\n"));
-  await fs.writeFile(path.join(targetDir, ".env.example"), lines.join("\n"));
+  await fs.writeFile(path.join(projectDirectory, ".env"), lines.join("\n"));
+  await fs.writeFile(path.join(projectDirectory, ".env.example"), lines.join("\n"));
 }
 
-export async function generateServerEnvFile(targetDir: string, database: TDatabase) {
+export async function generateServerEnvFile(projectDirectory: string, database: TDatabase) {
   const content = `
 import * as path from "node:path";
   import { fileURLToPath } from "node:url";
@@ -79,5 +79,5 @@ import * as path from "node:path";
   });
 `;
 
-  await fs.writeFile(path.join(targetDir, "packages", "env", "src", "server.ts"), content);
+  await fs.writeFile(path.join(projectDirectory, "packages", "env", "src", "server.ts"), content);
 }

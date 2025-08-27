@@ -3,9 +3,12 @@ import * as fs from "fs-extra";
 import { execPrefix } from "../utils/consts";
 import type { IPackageJson, TPackageManager } from "../utils/types";
 
-export async function generateRootPackageJson(targetDir: string, packageManager: TPackageManager) {
+export async function generateRootPackageJson(
+  projectDirectory: string,
+  packageManager: TPackageManager,
+) {
   const packageJson: IPackageJson = {
-    name: path.basename(targetDir),
+    name: path.basename(projectDirectory),
     private: true,
     version: "0.0.0",
     scripts: {
@@ -40,5 +43,5 @@ export async function generateRootPackageJson(targetDir: string, packageManager:
     packageJson.workspaces = ["apps/*", "packages/*"];
     packageJson.packageManager = "bun@1.2.20";
   }
-  await fs.writeJSON(path.join(targetDir, "package.json"), packageJson, { spaces: 2 });
+  await fs.writeJSON(path.join(projectDirectory, "package.json"), packageJson, { spaces: 2 });
 }
