@@ -1,4 +1,6 @@
 import * as path from "node:path";
+import * as p from "@clack/prompts";
+import { execa } from "execa";
 import * as fs from "fs-extra";
 import type { TDatabase } from "../utils/types";
 
