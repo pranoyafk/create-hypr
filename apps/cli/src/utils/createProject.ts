@@ -21,19 +21,23 @@ export async function createProject(userConfig: IConfig): Promise<TCreateProject
     // Ensure target directory exists (creates if missing)
     await fs.ensureDir(projectDirectory);
 
-    // Check if directory is empty and prompt user for confirmation if not
-    // This prevents accidentally overwriting existing projects
+    // Check if the project directory is not empty.
+    // If it's not empty, prompt the user for confirmation before proceeding.
+    // This helps prevent accidentally overwriting existing files.
     const files = await fs.readdir(projectDirectory);
     if (files.length > 0) {
       const shouldContinue = await p.confirm({
-        message: `Directory ${userConfig.name} already exists and is not empty. Continue?`,
+        message: `"${userConfig.name}" is not empty. Clear it and continue?`,
         initialValue: false,
       });
 
-      // User declined to continue with non-empty directory
+      // If the user chooses not to continue, exit early to avoid overwriting.
       if (!shouldContinue) {
-        return { success: false, error: "Directory already exists" };
+        return { success: false, error: "Directory is not empty" };
       }
+
+      // Clear the contents of the directory before proceeding.
+      await fs.emptydir(projectDirectory);
     }
 
     // Project scaffolding
