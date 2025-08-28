@@ -47,10 +47,7 @@ export async function generateEnvFiles(projectDirectory: string, database: TData
     "your-auth-secret",
     database !== "sqlite" ? database : undefined,
   );
-  console.log({
-    envContent,
-    exampleEnvContent,
-  });
+
   await Promise.all([
     fs.writeFile(path.join(projectDirectory, ".env"), envContent.join("\n")),
     fs.writeFile(path.join(projectDirectory, ".env.example"), exampleEnvContent.join("\n")),
