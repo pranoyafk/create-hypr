@@ -4,14 +4,25 @@ import { execa } from "execa";
 import * as fs from "fs-extra";
 import type { TDatabase } from "../utils/types";
 
-export async function generateEnvFiles(projectDirectory: string, database: TDatabase) {
-  const databaseUrl = {
-    mysql: "mysql://root:password@localhost:3306/db-name",
-    postgres: "postgres://postgres:password@localhost:5432/db-name",
-  };
+const databaseUrl: Record<Exclude<TDatabase, "sqlite">, string> = {
+  mysql: "mysql://root:password@localhost:3306/db-name",
+  postgres: "postgres://postgres:password@localhost:5432/db-name",
+};
+
+async function getAuthSecret() {
+  try {
+    const { stdout } = await execa("openssl", ["rand", "-base64", "32"]);
+    return stdout;
+  } catch {
+    p.log.info("Failed to generate auth secret");
+    return "";
+  }
+}
+
+function buildEnvContent(authSecret: string, database?: Exclude<TDatabase, "sqlite">) {
   const lines = [
     "# Server environment variables (never exposed to client)",
-    "BETTER_AUTH_SECRET=your-auth-secret # Generate with: openssl rand -base64 32",
+    `BETTER_AUTH_SECRET=${authSecret}`,
     "BETTER_AUTH_URL=http://localhost:8000",
     "NODE_ENV=development",
     "CORS_ORIGIN=http://localhost:3000",
@@ -21,12 +32,29 @@ export async function generateEnvFiles(projectDirectory: string, database: TData
     "VITE_SERVER_URL=http://localhost:8000",
   ];
 
-  if (database !== "sqlite") {
-    lines[1] = `DATABASE_URL=${databaseUrl[database]}`;
+  if (database) {
+    lines.push(`DATABASE_URL=${databaseUrl[database]}`);
   }
 
-  await fs.writeFile(path.join(projectDirectory, ".env"), lines.join("\n"));
-  await fs.writeFile(path.join(projectDirectory, ".env.example"), lines.join("\n"));
+  return lines;
+}
+
+export async function generateEnvFiles(projectDirectory: string, database: TDatabase) {
+  const authSecret = await getAuthSecret();
+
+  const envContent = buildEnvContent(authSecret, database !== "sqlite" ? database : undefined);
+  const exampleEnvContent = buildEnvContent(
+    "your-auth-secret",
+    database !== "sqlite" ? database : undefined,
+  );
+  console.log({
+    envContent,
+    exampleEnvContent,
+  });
+  await Promise.all([
+    fs.writeFile(path.join(projectDirectory, ".env"), envContent.join("\n")),
+    fs.writeFile(path.join(projectDirectory, ".env.example"), exampleEnvContent.join("\n")),
+  ]);
 }
 
 export async function generateServerEnvFile(projectDirectory: string, database: TDatabase) {
