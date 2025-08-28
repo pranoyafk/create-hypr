@@ -1,5 +1,5 @@
-import { fileURLToPath } from "node:url";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const execPrefix = {
   pnpm: "pnpx",
