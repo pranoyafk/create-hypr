@@ -14,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pranoymajumdar/create-hypr.git",
+    "url": "git+https://github.com/pranoyafk/create-hypr.git",
     "directory": "apps/cli"
   },
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/pranoymajumdar/create-hypr#readme",
+  "homepage": "https://github.com/pranoyafk/create-hypr#readme",
   "keywords": [
     "cli",
     "fullstack",

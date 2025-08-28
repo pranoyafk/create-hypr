@@ -60,7 +60,7 @@ Think of it as a T3-style stack, but built on TanStack, Hono, and Turborepo.
 
 Clone and run locally:
 ```bash
-git clone https://github.com/pranoymajumdar/create-hypr.git
+git clone https://github.com/pranoyafk/create-hypr.git
 cd create-hypr
 bun install
 bun build
