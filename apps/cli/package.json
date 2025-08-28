@@ -1,6 +1,6 @@
 {
   "name": "create-hypr",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A modern starter CLI to scaffold fullstack apps with Turborepo, TanStack, and more.",
   "module": "src/index.ts",
   "type": "module",
